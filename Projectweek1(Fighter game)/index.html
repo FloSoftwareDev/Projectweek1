@@ -3,20 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battle Blitz Platform Fighter</title>
+    <title>Battle Game</title>
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="400"></canvas>
+
     <div id="menu">
-        <h1>Stickman: The legacy of the mountains</h1>
-        <button id="playButton">Play</button>
+        <button id="playButton">Play Game</button>
     </div>
+
     <div id="result" style="display: none;">
-        <h2 id="winner"></h2>
-        <button id="restartButton">Play Again</button>
+        <h1 id="winner"></h1>
+        <button id="restartButton">Restart Game</button>
         <button id="backButton">Back to Menu</button>
     </div>
+
+    <!-- Health bars -->
+    <div id="player1-health-container" class="health-container">
+        <div id="player1-health" class="health-bar"></div>
+    </div>
+    <div id="player2-health-container" class="health-container">
+        <div id="player2-health" class="health-bar"></div>
+    </div>
+
+    <!-- Game canvas -->
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+
     <script src="JS/script.js"></script>
+
 </body>
 </html>
