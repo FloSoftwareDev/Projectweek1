@@ -59,7 +59,7 @@ function gameLoop() {
     if (keys['ArrowUp'] && !player2.jumping) jump(player2); // Jump
 
     // Check for attack
-    if (keys['space']) attack(player1, player2);
+    if (keys['z']) attack(player1, player2);
     if (keys['Enter']) attack(player2, player1);
 
     requestAnimationFrame(gameLoop);
