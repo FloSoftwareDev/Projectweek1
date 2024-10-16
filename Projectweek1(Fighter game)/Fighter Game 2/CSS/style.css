@@ -1,0 +1,74 @@
+body {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+background-color: #f0f0f0;
+font-family: Arial, sans-serif;
+}
+
+.container {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.stickman {
+display: inline-block;
+position: relative;
+width: 50px;
+height: 100px;
+background: transparent;
+border: 2px solid black;
+margin: 20px;
+animation: bounce 0.5s infinite alternate;
+}
+
+.stickman:before,
+.stickman:after {
+content: '';
+position: absolute;
+background: black;
+}
+
+.stickman:before {
+width: 20px;
+height: 20px;
+border-radius: 50%;
+top: -20px;
+left: 15px;
+}
+
+.stickman:after {
+width: 5px;
+height: 50px;
+left: 22px;
+top: 20px;
+}
+
+#kero {
+border-color: blue;
+}
+
+#lira {
+border-color: pink;
+}
+
+#drax {
+border-color: green;
+}
+
+#master-sumi {
+border-color: red;
+}
+
+.shadowy {
+border-color: gray;
+background: rgba(0, 0, 0, 0.5);
+color: white;
+}
+
+@keyframes bounce {
+0% { transform: translateY(0); }
+100% { transform: translateY(-10px); }
+}
