@@ -3,8 +3,28 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // Define player properties for player1 and player2
-let player1 = { x: 50, y: 300, width: 40, height: 60, health: 100, color: 'blue', velocityY: 0, jumping: false };
-let player2 = { x: 700, y: 300, width: 40, height: 60, health: 100, color: 'red', velocityY: 0, jumping: false };
+let player1 = { 
+    x: 50, 
+    y: 300, 
+    width: 40, 
+    height: 60, 
+    health: 100, 
+    color: 'blue', 
+    jumping: false, 
+    jumpProgress: 0, 
+    jumpHeight: 80 // Controls how high the player jumps
+};
+let player2 = { 
+    x: 700, 
+    y: 300, 
+    width: 40, 
+    height: 60, 
+    health: 100, 
+    color: 'red', 
+    jumping: false, 
+    jumpProgress: 0, 
+    jumpHeight: 80 // Controls how high the player jumps
+};
 
 // Define global game variables
 let gravity = 0.5;
@@ -29,8 +49,28 @@ function startBattle() {
     document.getElementById('result').style.display = 'none'; // Hide result screen
 
     // Reset both players' positions, health, and other properties
-    player1 = { x: 50, y: 300, width: 40, height: 60, health: 100, color: 'blue', velocityY: 0, jumping: false };
-    player2 = { x: 700, y: 300, width: 40, height: 60, health: 100, color: 'red', velocityY: 0, jumping: false };
+    player1 = { 
+        x: 50, 
+        y: 300, 
+        width: 40, 
+        height: 60, 
+        health: 100, 
+        color: 'blue', 
+        jumping: false, 
+        jumpProgress: 0, 
+        jumpHeight: 80 
+    };
+    player2 = { 
+        x: 700, 
+        y: 300, 
+        width: 40, 
+        height: 60, 
+        health: 100, 
+        color: 'red', 
+        jumping: false, 
+        jumpProgress: 0, 
+        jumpHeight: 80 
+    };
 
     // Reset game variables
     keys = {};
@@ -73,8 +113,8 @@ function gameLoop() {
     // Draw both players
     drawStickman(player1);
     drawStickman(player2);
-    // ...
-    // Apply gravity to both players
+
+    // Apply gravity to both players and check for jumping
     applyGravity(player1);
     applyGravity(player2);
 
@@ -83,21 +123,20 @@ function gameLoop() {
     if (keys['d'] && player1.x < canvas.width - player1.width) player1.x += 5; // Move right
     if (keys['w']) jump(player1); // Jump
 
-// Handle player2 movement based on keys pressed
-if (keys['ArrowLeft'] && player2.x > 0) player2.x -= 5; // Move left
-if (keys['ArrowRight'] && player2.x < canvas.width - player2.width) player2.x += 5; // Move right
-if (keys['ArrowUp']) jump(player2); // Jump
+    // Handle player2 movement based on keys pressed
+    if (keys['ArrowLeft'] && player2.x > 0) player2.x -= 5; // Move left
+    if (keys['ArrowRight'] && player2.x < canvas.width - player2.width) player2.x += 5; // Move right
+    if (keys['ArrowUp']) jump(player2); // Jump
 
-// Check for attack actions
-if (keys['z']) attack(player1, player2); // Player1 attacks with 'z'
-if (keys['Enter']) attack(player2, player1); // Player2 attacks with 'Enter'
-
-requestAnimationFrame(gameLoop); // Request the next frame, continues the loop
+    requestAnimationFrame(gameLoop); // Request the next frame, continues the loop
 }
+
+// Function to draw the platform
 function drawPlatform() {
     ctx.fillStyle = 'brown'; // Platform color
     ctx.fillRect(platform.x, platform.y, platform.width, platform.height); // Draw platform
 }
+
 // Draw each stickman player
 function drawStickman(player) {
     ctx.fillStyle = player.color; // Set the player color
@@ -134,78 +173,39 @@ function drawStickman(player) {
     ctx.fillText(`Health: ${player.health}`, player.x, player.y - player.height - 10);
 }
 
-// Apply gravity to players, ensuring they fall unless they're on the ground or platform
-// Apply gravity to players, ensuring they fall unless they're on the ground or platform
+// Apply gravity and manage the jumping arc for players
 function applyGravity(player) {
-    const groundLevel = canvas.height - player.height; // Define the ground level
+    const groundLevel = canvas.height - player.height;
 
-    // Check if the player is on the platform
-    let onPlatform = player.y + player.height <= platform.y && 
-                    player.y + player.height + player.velocityY >= platform.y && 
-                    player.x + player.width > platform.x && player.x < platform.x + platform.width;
+    // If the player is jumping, calculate the jump arc using a sine wave
+    if (player.jumping) {
+        // Increment the jump progress
+        player.jumpProgress += 0.1; // Adjust this value to control jump speed
 
-    // Update the jumping status based on ground and platform checks
-    if (onPlatform) {
-        player.velocityY = 0; // Reset vertical velocity
-        player.jumping = false; // Player is on the platform
-        player.y = platform.y - player.height; // Place player on the platform
-    } else if (player.y < groundLevel) {
-        player.velocityY += gravity; // Apply gravity when in the air
-        player.jumping = true; // Player is in the air
-    } else {
-        player.velocityY = 0; // Reset vertical velocity when on the ground
-        player.jumping = false; // Player is not jumping
-        player.y = groundLevel; // Place player on the ground
+        // Calculate the vertical offset using a sine function for smooth jump
+        let jumpOffset = Math.sin(player.jumpProgress) * player.jumpHeight;
+
+        // Update player Y position based on jump arc
+        player.y = groundLevel - jumpOffset;
+
+        // End the jump when the progress is complete
+        if (player.jumpProgress >= Math.PI) {
+            player.jumping = false; // Jump finished
+            player.y = groundLevel; // Reset position to ground level
+        }
+    } else if (player.y + player.height < groundLevel) {
+        // Apply gravity when not jumping
+        player.y += gravity;
     }
-
-    player.y += player.velocityY; // Update player's vertical position
 }
 
 // Function to make the player jump
 function jump(player) {
-    // Only allow the player to jump if they are not already jumping (i.e., they are on the ground or platform)
     if (!player.jumping) {
-        player.velocityY = -10; // Initial jump velocity
-        player.jumping = true; // Mark player as jumping to prevent double jumps
+        player.jumping = true; // Start the jump
+        player.jumpProgress = 0; // Reset jump progress
     }
 }
-
-let attackdelay = false; // Initialize attackdelay variable
-
-function delaytimer() {
-    // This will reset the attackdelay after 2 seconds
-    setTimeout(function() {
-        attackdelay = false;
-    }, 500); // No need for a loop since we only want to set the delay once
-}
-
-// Handle attacks between two players, reduce health when in range
-function attack(attacker, defender) {
-    if (!attackdelay) { // Only proceed if there's no current attack delay
-        attackdelay = true; // Set attack delay to true immediately
-
-        // Call delaytimer to reset the attack delay after 2 seconds
-        delaytimer();
-
-        // Check if attacker is close to defender and both players are alive
-        if (
-            attacker.x + attacker.width > defender.x && // Attacker is close to defender
-            attacker.x < defender.x + defender.width &&
-            attacker.health > 0 && defender.health > 0 // Both players must be alive
-        ) {
-            defender.health -= 10; // Reduce defender's health
-            if (defender.health < 0) defender.health = 0; // Prevent negative health
-
-            updateHealthBars(); // Update health bars on screen after attack
-
-            if (defender.health <= 0) { // If defender's health reaches 0, game over
-                defender.health = 0; // Set health to 0
-                declareWinner(); // Declare winner when one player has 0 health
-            }
-        }
-    }
-}
-
 
 // Update the health bars based on the current health of each player
 function updateHealthBars() {
