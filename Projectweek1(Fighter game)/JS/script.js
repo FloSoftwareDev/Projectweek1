@@ -12,6 +12,9 @@ let keys = {}; // Stores key states (pressed or not)
 let timer = 60; // Timer for the game
 let interval; // For the timer interval
 
+// Define platform properties
+let platform = { x: 200, y: 400, width: 400, height: 20 }; // Adjust position and size as needed
+
 // Event listeners for play and restart buttons
 document.getElementById('playButton').onclick = startBattle;
 document.getElementById('restartButton').onclick = startBattle;
@@ -61,14 +64,16 @@ function declareWinner() {
     document.getElementById('result').style.display = 'block'; // Show result screen
 }
 
-// Main game loop, constantly updates the canvas and player states
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+    // Draw platform
+    drawPlatform(); // Draw the platform before players
 
     // Draw both players
     drawStickman(player1);
     drawStickman(player2);
-
+    // ...
     // Apply gravity to both players
     applyGravity(player1);
     applyGravity(player2);
@@ -78,18 +83,21 @@ function gameLoop() {
     if (keys['d'] && player1.x < canvas.width - player1.width) player1.x += 5; // Move right
     if (keys['w']) jump(player1); // Jump
 
-    // Handle player2 movement based on keys pressed
-    if (keys['ArrowLeft'] && player2.x > 0) player2.x -= 5; // Move left
-    if (keys['ArrowRight'] && player2.x < canvas.width - player2.width) player2.x += 5; // Move right
-    if (keys['ArrowUp']) jump(player2); // Jump
+// Handle player2 movement based on keys pressed
+if (keys['ArrowLeft'] && player2.x > 0) player2.x -= 5; // Move left
+if (keys['ArrowRight'] && player2.x < canvas.width - player2.width) player2.x += 5; // Move right
+if (keys['ArrowUp']) jump(player2); // Jump
 
-    // Check for attack actions
-    if (keys['z']) attack(player1, player2); // Player1 attacks with 'z'
-    if (keys['Enter']) attack(player2, player1); // Player2 attacks with 'Enter'
+// Check for attack actions
+if (keys['z']) attack(player1, player2); // Player1 attacks with 'z'
+if (keys['Enter']) attack(player2, player1); // Player2 attacks with 'Enter'
 
-    requestAnimationFrame(gameLoop); // Request the next frame, continues the loop
+requestAnimationFrame(gameLoop); // Request the next frame, continues the loop
 }
-
+function drawPlatform() {
+    ctx.fillStyle = 'brown'; // Platform color
+    ctx.fillRect(platform.x, platform.y, platform.width, platform.height); // Draw platform
+}
 // Draw each stickman player
 function drawStickman(player) {
     ctx.fillStyle = player.color; // Set the player color
@@ -126,49 +134,78 @@ function drawStickman(player) {
     ctx.fillText(`Health: ${player.health}`, player.x, player.y - player.height - 10);
 }
 
-// Apply gravity to players, ensuring they fall unless they're on the ground
+// Apply gravity to players, ensuring they fall unless they're on the ground or platform
+// Apply gravity to players, ensuring they fall unless they're on the ground or platform
 function applyGravity(player) {
     const groundLevel = canvas.height - player.height; // Define the ground level
 
-    if (player.y < groundLevel) {
-        player.velocityY += gravity; // Increase velocity as the player falls
-        player.jumping = true; // Player is in the air (jumping)
+    // Check if the player is on the platform
+    let onPlatform = player.y + player.height <= platform.y && 
+                    player.y + player.height + player.velocityY >= platform.y && 
+                    player.x + player.width > platform.x && player.x < platform.x + platform.width;
+
+    // Update the jumping status based on ground and platform checks
+    if (onPlatform) {
+        player.velocityY = 0; // Reset vertical velocity
+        player.jumping = false; // Player is on the platform
+        player.y = platform.y - player.height; // Place player on the platform
+    } else if (player.y < groundLevel) {
+        player.velocityY += gravity; // Apply gravity when in the air
+        player.jumping = true; // Player is in the air
     } else {
-        player.velocityY = 0; // Stop falling when player hits the ground
-        player.jumping = false; // Player is no longer jumping
-        player.y = groundLevel; // Reset position to ground
+        player.velocityY = 0; // Reset vertical velocity when on the ground
+        player.jumping = false; // Player is not jumping
+        player.y = groundLevel; // Place player on the ground
     }
-    
-    player.y += player.velocityY; // Update player position with gravity
+
+    player.y += player.velocityY; // Update player's vertical position
 }
 
 // Function to make the player jump
 function jump(player) {
-    // Only allow the player to jump if they are not already jumping (i.e., they are on the ground)
+    // Only allow the player to jump if they are not already jumping (i.e., they are on the ground or platform)
     if (!player.jumping) {
         player.velocityY = -10; // Initial jump velocity
         player.jumping = true; // Mark player as jumping to prevent double jumps
     }
 }
 
+let attackdelay = false; // Initialize attackdelay variable
+
+function delaytimer() {
+    // This will reset the attackdelay after 2 seconds
+    setTimeout(function() {
+        attackdelay = false;
+    }, 500); // No need for a loop since we only want to set the delay once
+}
+
 // Handle attacks between two players, reduce health when in range
 function attack(attacker, defender) {
-    if (
-        attacker.x + attacker.width > defender.x && // Attacker is close to defender
-        attacker.x < defender.x + defender.width &&
-        attacker.health > 0 && defender.health > 0 // Both players must be alive
-    ) {
-        defender.health -= 10; // Reduce defender's health
-        if (defender.health < 0) defender.health = 0; // Prevent negative health
+    if (!attackdelay) { // Only proceed if there's no current attack delay
+        attackdelay = true; // Set attack delay to true immediately
 
-        updateHealthBars(); // Update health bars on screen after attack
+        // Call delaytimer to reset the attack delay after 2 seconds
+        delaytimer();
 
-        if (defender.health <= 0) { // If defender's health reaches 0, game over
-            defender.health = 0;
-            declareWinner(); // Declare winner when one player has 0 health
+        // Check if attacker is close to defender and both players are alive
+        if (
+            attacker.x + attacker.width > defender.x && // Attacker is close to defender
+            attacker.x < defender.x + defender.width &&
+            attacker.health > 0 && defender.health > 0 // Both players must be alive
+        ) {
+            defender.health -= 10; // Reduce defender's health
+            if (defender.health < 0) defender.health = 0; // Prevent negative health
+
+            updateHealthBars(); // Update health bars on screen after attack
+
+            if (defender.health <= 0) { // If defender's health reaches 0, game over
+                defender.health = 0; // Set health to 0
+                declareWinner(); // Declare winner when one player has 0 health
+            }
         }
     }
 }
+
 
 // Update the health bars based on the current health of each player
 function updateHealthBars() {
@@ -188,4 +225,3 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     keys[e.key] = false; // Set key state to false when released
 });
-// hoi hier ben ik
