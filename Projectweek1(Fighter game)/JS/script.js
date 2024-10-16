@@ -128,18 +128,23 @@ function drawStickman(player) {
 
 // Apply gravity to players, ensuring they fall unless they're on the ground
 function applyGravity(player) {
-    if (player.y < canvas.height - player.height) {
+    const groundLevel = canvas.height - player.height; // Define the ground level
+
+    if (player.y < groundLevel) {
         player.velocityY += gravity; // Increase velocity as the player falls
+        player.jumping = true; // Player is in the air (jumping)
     } else {
         player.velocityY = 0; // Stop falling when player hits the ground
         player.jumping = false; // Player is no longer jumping
-        player.y = canvas.height - player.height; // Reset position to ground
+        player.y = groundLevel; // Reset position to ground
     }
+    
     player.y += player.velocityY; // Update player position with gravity
 }
 
 // Function to make the player jump
 function jump(player) {
+    // Only allow the player to jump if they are not already jumping (i.e., they are on the ground)
     if (!player.jumping) {
         player.velocityY = -10; // Initial jump velocity
         player.jumping = true; // Mark player as jumping to prevent double jumps
@@ -183,3 +188,4 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     keys[e.key] = false; // Set key state to false when released
 });
+// hoi hier ben ik
