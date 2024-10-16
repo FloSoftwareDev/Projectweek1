@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d');
 // Define player properties for player1 and player2
 let player1 = { 
     x: 50, 
-    y: 300, 
+    y: 350, 
     width: 40, 
     height: 60, 
     health: 100, 
@@ -16,7 +16,7 @@ let player1 = {
 };
 let player2 = { 
     x: 700, 
-    y: 300, 
+    y: 350, 
     width: 40, 
     height: 60, 
     health: 100, 
@@ -51,7 +51,7 @@ function startBattle() {
     // Reset both players' positions, health, and other properties
     player1 = { 
         x: 50, 
-        y: 300, 
+        y: 350, 
         width: 40, 
         height: 60, 
         health: 100, 
@@ -62,7 +62,7 @@ function startBattle() {
     };
     player2 = { 
         x: 700, 
-        y: 300, 
+        y: 350, 
         width: 40, 
         height: 60, 
         health: 100, 
@@ -207,21 +207,63 @@ function jump(player) {
     }
 }
 
-// Update the health bars based on the current health of each player
+// Variables for attack delay and cooldown
+let canAttack1 = true; // Player 1 attack cooldown
+let canAttack2 = true; // Player 2 attack cooldown
+let attackCooldown = 500; // 500 milliseconds cooldown between attacks
+
+// Function to handle attacks
+function attack(attacker, defender, canAttack, setCooldown) {
+    if (canAttack) { // Ensure attack can happen (based on cooldown)
+        // Check if attacker is within range to hit the defender
+        if (
+            attacker.x + attacker.width > defender.x && // Attacker right edge passes defender left edge
+            attacker.x < defender.x + defender.width && // Attacker left edge passes defender right edge
+            Math.abs(attacker.y - defender.y) < 50 // Ensure they are on the same height level
+        ) {
+            // Deal damage and update health bars
+            defender.health -= 10; // Damage dealt
+            if (defender.health < 0) defender.health = 0; // Ensure health doesn't go below 0
+            updateHealthBars();
+
+            // End game if defender's health reaches 0
+            if (defender.health === 0) {
+                declareWinner(); // Declare the winner
+            }
+        }
+
+        // Set attack cooldown
+        setCooldown(false); // Disable attacking
+        setTimeout(() => setCooldown(true), attackCooldown); // Reset attack ability after cooldown
+    }
+}
+
+// Update health bars based on current player health
 function updateHealthBars() {
     const player1HealthBar = document.getElementById('player1-health');
     const player2HealthBar = document.getElementById('player2-health');
-
-    player1HealthBar.style.width = player1.health + '%'; // Set health bar width to health percentage
-    player2HealthBar.style.width = player2.health + '%'; // Set health bar width to health percentage
+    player1HealthBar.style.width = player1.health + '%'; // Update player 1 health bar width
+    player2HealthBar.style.width = player2.health + '%'; // Update player 2 health bar width
 }
 
-// Keydown event listener to track when keys are pressed
+// Global keydown listener for movement and attacking
 window.addEventListener('keydown', (e) => {
-    keys[e.key] = true; // Set key state to true when pressed
+    keys[e.key] = true; // Track the key as pressed
+
+    // Player 1 actions
+    if (e.key === ' ') {
+        // Player 1 attack when pressing space
+        attack(player1, player2, canAttack1, (state) => canAttack1 = state);
+    }
+
+    // Player 2 actions
+    if (e.key === 'Enter') {
+        // Player 2 attack when pressing Enter
+        attack(player2, player1, canAttack2, (state) => canAttack2 = state);
+    }
 });
 
-// Keyup event listener to track when keys are released
+// Global keyup listener to reset key state
 window.addEventListener('keyup', (e) => {
-    keys[e.key] = false; // Set key state to false when released
+    keys[e.key] = false; // Track the key as released
 });
