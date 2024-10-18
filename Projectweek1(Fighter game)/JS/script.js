@@ -50,8 +50,12 @@ let platform = {
 document.getElementById('playButton').onclick = startBattle;
 document.getElementById('restartButton').onclick = startBattle;
 document.getElementById('backButton').onclick = () => {
-    document.getElementById('menu').style.display = 'block';
+    document.getElementById('menu').style.display = 'flex';
     document.getElementById('result').style.display = 'none';
+    const canvas = document.getElementById('gameCanvas');
+    canvas.classList.add('hidden');
+    document.getElementById('player1-health-container').style.display = 'none';
+    document.getElementById('player2-health-container').style.display = 'none';
 };
 
 // Function to start the battle and initialize game variables
@@ -146,9 +150,20 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Function to draw the platform
+// Create a new image element for the platform texture
+const platformImage = new Image();
+platformImage.src = 'https://via.placeholder.com/400x20'; // Placeholder image URL for the platform texture
+
+// Draw platform using an image pattern when the image is loaded
+platformImage.onload = function() {
+    drawPlatform();
+};
+
+// Function to draw the platform using a texture pattern
 function drawPlatform() {
-    ctx.fillStyle = 'brown';
+    // Create the pattern using the platform image
+    const pattern = ctx.createPattern(platformImage, 'repeat');
+    ctx.fillStyle = pattern;
     ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
 }
 
