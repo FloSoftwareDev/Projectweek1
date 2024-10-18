@@ -31,6 +31,7 @@ let gravity = 0.5;
 let keys = {}; // Stores key states (pressed or not)
 let timer = 60; // Timer for the game
 let interval; // For the timer interval
+let gameOver = false; // Track if the game is over
 
 // Define platform properties
 let platform = { x: 200, y: 400, width: 400, height: 20 }; // Adjust position and size as needed
@@ -75,6 +76,7 @@ function startBattle() {
     // Reset game variables
     keys = {};
     timer = 60;
+    gameOver = false; // Reset the game over flag
 
     clearInterval(interval); // Stop any previous intervals
     updateHealthBars(); // Update the health bar display
@@ -102,9 +104,12 @@ function declareWinner() {
     }
     document.getElementById('winner').innerText = winner; // Display the winner
     document.getElementById('result').style.display = 'block'; // Show result screen
+    gameOver = true; // Set game over to true
 }
 
 function gameLoop() {
+    if (gameOver) return; // Stop the game loop if the game is over
+
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
     // Draw platform
@@ -201,7 +206,7 @@ function applyGravity(player) {
 
 // Function to make the player jump
 function jump(player) {
-    if (!player.jumping) {
+    if (!player.jumping && !gameOver) { // Prevent jumping if the game is over
         player.jumping = true; // Start the jump
         player.jumpProgress = 0; // Reset jump progress
     }
@@ -214,7 +219,7 @@ let attackCooldown = 500; // 500 milliseconds cooldown between attacks
 
 // Function to handle attacks
 function attack(attacker, defender, canAttack, setCooldown) {
-    if (canAttack) { // Ensure attack can happen (based on cooldown)
+    if (canAttack && !gameOver) { // Ensure attack can happen and game is not over
         // Check if attacker is within range to hit the defender
         if (
             attacker.x + attacker.width > defender.x && // Attacker right edge passes defender left edge
@@ -248,6 +253,7 @@ function updateHealthBars() {
 
 // Global keydown listener for movement and attacking
 window.addEventListener('keydown', (e) => {
+    if (gameOver) return; // Stop any actions if the game is over
     keys[e.key] = true; // Track the key as pressed
 
     // Player 1 actions
