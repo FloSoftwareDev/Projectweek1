@@ -7,28 +7,24 @@
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-
-    <!-- Main menu -->
+<!-- div for the menu with the play button -->
     <div id="menu">
         <button id="playButton" class="menu-button">Play Game</button>
     </div>
-
-    <!-- Result screen (initially hidden) -->
+<!-- div for the result of the game and the buttons that appear there -->
     <div id="result" style="display: none;">
         <h1 id="winner"></h1>
         <button id="restartButton" class="menu-button">Restart Game</button>
         <button id="backButton" class="menu-button">Back to Menu</button>
     </div>
-
-    <!-- Health bars (initially hidden) -->
+<!-- div for the health bars -->
     <div id="player1-health-container" class="health-container hidden">
         <div id="player1-health" class="health-bar"></div>
     </div>
     <div id="player2-health-container" class="health-container hidden">
         <div id="player2-health" class="health-bar"></div>
     </div>
-
-    <!-- Game canvas -->
+<!-- the game is played on this canvas -->
     <canvas id="gameCanvas" width="800" height="400" class="hidden"></canvas>
 
     <script src="JS/script.js"></script>
