@@ -8,26 +8,28 @@
 </head>
 <body>
 
+    <!-- Main menu -->
     <div id="menu">
-        <button id="playButton">Play Game</button>
+        <button id="playButton" class="menu-button">Play Game</button>
     </div>
 
+    <!-- Result screen (initially hidden) -->
     <div id="result" style="display: none;">
         <h1 id="winner"></h1>
-        <button id="restartButton">Restart Game</button>
-        <button id="backButton">Back to Menu</button>
+        <button id="restartButton" class="menu-button">Restart Game</button>
+        <button id="backButton" class="menu-button">Back to Menu</button>
     </div>
 
-    <!-- Health bars -->
-    <div id="player1-health-container" class="health-container">
+    <!-- Health bars (initially hidden) -->
+    <div id="player1-health-container" class="health-container hidden">
         <div id="player1-health" class="health-bar"></div>
     </div>
-    <div id="player2-health-container" class="health-container">
+    <div id="player2-health-container" class="health-container hidden">
         <div id="player2-health" class="health-bar"></div>
     </div>
 
     <!-- Game canvas -->
-    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <canvas id="gameCanvas" width="800" height="400" class="hidden"></canvas>
 
     <script src="JS/script.js"></script>
 

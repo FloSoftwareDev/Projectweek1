@@ -44,11 +44,22 @@ document.getElementById('backButton').onclick = () => {
     document.getElementById('result').style.display = 'none';
 };
 
-// Start the game, reset player properties, and initiate the timer
 function startBattle() {
     document.getElementById('menu').style.display = 'none'; // Hide the menu
     document.getElementById('result').style.display = 'none'; // Hide result screen
 
+    // Show the canvas and remove the hidden class
+    const canvas = document.getElementById('gameCanvas');
+    canvas.classList.remove('hidden');
+
+    // Show the health bars
+    document.getElementById('player1-health-container').style.display = 'block';
+    document.getElementById('player2-health-container').style.display = 'block';
+
+    // Reset player properties, health, and other variables
+    player1.health = 100;
+    player2.health = 100;
+    updateHealthBars();
     // Reset both players' positions, health, and other properties
     player1 = { 
         x: 50, 
@@ -87,10 +98,12 @@ function startBattle() {
 // Start the countdown timer and check for game over when time reaches 0
 function startTimer() {
     interval = setInterval(() => {
-        timer--; // Decrease timer by 1 second
-        if (timer <= 0) {
-            clearInterval(interval); // Stop timer
-            declareWinner(); // Declare the winner
+        if (!gameOver) { // Only decrease timer if game is not over
+            timer--; // Decrease timer by 1 second
+            if (timer <= 0) {
+                clearInterval(interval); // Stop timer
+                declareWinner(); // Declare the winner
+            }
         }
     }, 1000); // Run every 1000 milliseconds (1 second)
 }
@@ -123,15 +136,18 @@ function gameLoop() {
     applyGravity(player1);
     applyGravity(player2);
 
-    // Handle player1 movement based on keys pressed
-    if (keys['a'] && player1.x > 0) player1.x -= 5; // Move left
-    if (keys['d'] && player1.x < canvas.width - player1.width) player1.x += 5; // Move right
-    if (keys['w']) jump(player1); // Jump
+    // Handle player1 movement based on keys pressed, but only if game is not over
+    if (keys['a'] && player1.x > 0 && !gameOver) player1.x -= 5; // Move left
+    if (keys['d'] && player1.x < canvas.width - player1.width && !gameOver) player1.x += 5; // Move right
+    if (keys['w'] && !gameOver) jump(player1); // Jump
 
-    // Handle player2 movement based on keys pressed
-    if (keys['ArrowLeft'] && player2.x > 0) player2.x -= 5; // Move left
-    if (keys['ArrowRight'] && player2.x < canvas.width - player2.width) player2.x += 5; // Move right
-    if (keys['ArrowUp']) jump(player2); // Jump
+    // Handle player2 movement based on keys pressed, but only if game is not over
+    if (keys['ArrowLeft'] && player2.x > 0 && !gameOver) player2.x -= 5; // Move left
+    if (keys['ArrowRight'] && player2.x < canvas.width - player2.width && !gameOver) player2.x += 5; // Move right
+    if (keys['ArrowUp'] && !gameOver) jump(player2); // Jump
+
+    // Draw the timer above the canvas
+    drawTimer();
 
     requestAnimationFrame(gameLoop); // Request the next frame, continues the loop
 }
@@ -140,6 +156,14 @@ function gameLoop() {
 function drawPlatform() {
     ctx.fillStyle = 'brown'; // Platform color
     ctx.fillRect(platform.x, platform.y, platform.width, platform.height); // Draw platform
+}
+
+// Draw the remaining time at the top center of the canvas
+function drawTimer() {
+    ctx.font = '30px Arial'; // Set the font and size
+    ctx.fillStyle = 'black'; // Timer text color
+    ctx.textAlign = 'center'; // Align the text to the center
+    ctx.fillText(`Time: ${timer}`, canvas.width / 2, 50); // Draw the timer at the top center
 }
 
 // Draw each stickman player
@@ -172,10 +196,6 @@ function drawStickman(player) {
     ctx.moveTo(player.x + player.width / 2, player.y - player.height + 50);
     ctx.lineTo(player.x + player.width, player.y - player.height + 70); // Right leg
     ctx.stroke();
-
-    // Draw health text
-    ctx.fillStyle = 'black';
-    ctx.fillText(`Health: ${player.health}`, player.x, player.y - player.height - 10);
 }
 
 // Apply gravity and manage the jumping arc for players
@@ -206,7 +226,7 @@ function applyGravity(player) {
 
 // Function to make the player jump
 function jump(player) {
-    if (!player.jumping && !gameOver) { // Prevent jumping if the game is over
+    if (!player.jumping && !gameOver) { // Only allow jumping if the game is not over
         player.jumping = true; // Start the jump
         player.jumpProgress = 0; // Reset jump progress
     }
@@ -219,7 +239,7 @@ let attackCooldown = 500; // 500 milliseconds cooldown between attacks
 
 // Function to handle attacks
 function attack(attacker, defender, canAttack, setCooldown) {
-    if (canAttack && !gameOver) { // Ensure attack can happen and game is not over
+    if (canAttack && !gameOver) { // Ensure attack can happen (based on cooldown) and if the game isn't over
         // Check if attacker is within range to hit the defender
         if (
             attacker.x + attacker.width > defender.x && // Attacker right edge passes defender left edge
@@ -247,13 +267,19 @@ function attack(attacker, defender, canAttack, setCooldown) {
 function updateHealthBars() {
     const player1HealthBar = document.getElementById('player1-health');
     const player2HealthBar = document.getElementById('player2-health');
+
     player1HealthBar.style.width = player1.health + '%'; // Update player 1 health bar width
     player2HealthBar.style.width = player2.health + '%'; // Update player 2 health bar width
+
+    // Add health percentage text inside the bars
+    player1HealthBar.innerText = `Player 1: ${player1.health}%`;
+    player2HealthBar.innerText = `Player 2: ${player2.health}%`;
 }
 
 // Global keydown listener for movement and attacking
 window.addEventListener('keydown', (e) => {
-    if (gameOver) return; // Stop any actions if the game is over
+    if (gameOver) return; // Stop actions if game is over
+
     keys[e.key] = true; // Track the key as pressed
 
     // Player 1 actions
