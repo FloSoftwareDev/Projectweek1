@@ -85,7 +85,7 @@ h1 {
 /* Health bar styling */
 .health-bar {
     height: 100%;
-    background-color: green;
+    background-color: rgb(128, 0, 0);
     border-radius: 12px;
     color: white;
     text-align: center;

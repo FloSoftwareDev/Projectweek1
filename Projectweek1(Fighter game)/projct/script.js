@@ -55,6 +55,7 @@ function startBattle() {
 function startTimer() {
     interval = setInterval(() => {
         timer--;
+        document.getElementById('timer').innerText = `Tijd: ${timer} s`;
         if (timer <= 0) {
             clearInterval(interval);
             declareWinner();
@@ -193,4 +194,3 @@ stickmanImage.onload = () => {
     Promise.all(slapImages.map(img => new Promise(resolve => { img.onload = resolve; })))
         .then(startBattle);
 };
-
