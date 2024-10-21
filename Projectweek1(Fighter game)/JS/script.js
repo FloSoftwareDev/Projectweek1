@@ -4,8 +4,7 @@ const ctx = canvas.getContext('2d');
 
 // Player properties for player1 and player2
 let player1 = {
-    x: 50,
-    y: 350,
+$1y: 300, // Updated starting height to align with the platform
     width: 40,
     height: 60,
     health: 100,
@@ -17,8 +16,7 @@ let player1 = {
     blocking: false
 };
 let player2 = {
-    x: 700,
-    y: 350,
+$1y: 300, // Updated starting height to align with the platform
     width: 40,
     height: 60,
     health: 100,
@@ -64,7 +62,7 @@ function startBattle() {
     updateHealthBars();
     player1 = {
         x: 50,
-        y: 350,
+        y: 300,
         width: 40,
         height: 60,
         health: 100,
@@ -77,7 +75,7 @@ function startBattle() {
     };
     player2 = {
         x: 700,
-        y: 350,
+        y: 300,
         width: 40,
         height: 60,
         health: 100,
@@ -127,12 +125,13 @@ function declareWinner() {
 function gameLoop() {
     if (gameOver || gamePaused) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawPlatform(); // Draw the platform first
     drawStickman(player1);
     drawStickman(player2);
     applyGravity(player1);
-    if (isColliding(player1, player2, 'down')) player1.y = player2.y - player1.height;
+    if (player1.y > 340) player1.y = 340; // Stop player1 at the platform level
     applyGravity(player2);
-    if (isColliding(player2, player1, 'down')) player2.y = player1.y - player2.height;
+    if (player2.y > 340) player2.y = 340; // Stop player2 at the platform level
     if (keys['a'] && player1.x > 0 && !gameOver && !isColliding(player1, player2, 'left')) player1.x -= 5;
     if (keys['d'] && player1.x < canvas.width - player1.width && !gameOver && !isColliding(player1, player2, 'right')) player1.x += 5;
     if (keys['w'] && !gameOver && !isColliding(player1, player2, 'up')) jump(player1);
@@ -142,6 +141,12 @@ function gameLoop() {
     checkCollision(player1, player2);
     drawTimer();
     requestAnimationFrame(gameLoop);
+}
+
+// Function to draw the platform for players to stand on
+function drawPlatform() {
+    ctx.fillStyle = '#654321'; // Brown color for the platform
+    ctx.fillRect(0, 350, canvas.width, 50); // Draw the platform near the bottom of the canvas
 }
 
 // Function to draw the remaining time at the top center of the canvas
@@ -178,7 +183,7 @@ function drawStickman(player) {
 
 // Function to apply gravity and manage the jumping arc for players
 function applyGravity(player) {
-    const groundLevel = canvas.height - player.height;
+    const groundLevel = 340; // Platform height
     if (player.jumping) {
         player.jumpProgress += 0.1;
         let jumpOffset = Math.sin(player.jumpProgress) * player.jumpHeight;
@@ -187,7 +192,7 @@ function applyGravity(player) {
             player.jumping = false;
             player.y = groundLevel;
         }
-    } else if (player.y + player.height < groundLevel) {
+    } else if (player.y < groundLevel) {
         player.y += gravity;
     }
 }
@@ -213,96 +218,96 @@ function attack(attacker, defender) {
                 if (defender.health < 0) defender.health = 0;
             }
             updateHealthBars();
-                if (defender.health === 0) {
-                    declareWinner();
-                }
-            }
-            setAttackCooldown(attacker);
-        }
-    }
-
-    // Function to set the attack cooldown
-    function setAttackCooldown(player) {
-        player.canAttack = false;
-        setTimeout(() => {
-            player.canAttack = true;
-        }, 500);
-    }
-
-    // Function to update health bars for both players
-    function updateHealthBars() {
-        const player1HealthBar = document.getElementById('player1-health');
-        const player2HealthBar = document.getElementById('player2-health');
-        player1HealthBar.style.width = player1.health + '%';
-        player2HealthBar.style.width = player2.health + '%';
-        player1HealthBar.innerText = `Player 1: ${player1.health}%`;
-        player2HealthBar.innerText = `Player 2: ${player2.health}%`;
-    }
-
-    // Function to check for collisions between players
-    function checkCollision(playerA, playerB) {
-        if (
-            playerA.x < playerB.x + playerB.width &&
-            playerA.x + playerA.width > playerB.x &&
-            playerA.y < playerB.y + playerB.height &&
-            playerA.y + playerA.height > playerB.y
-        ) {
-            // Handle collision (e.g., stop movement, push back players, reduce speed)
-            console.log('Collision detected');
-        }
-    }
-
-    // Function to determine if players are colliding to prevent walking through each other
-    function isColliding(playerA, playerB, direction) {
-        if (
-            playerA.x < playerB.x + playerB.width &&
-            playerA.x + playerA.width > playerB.x &&
-            playerA.y < playerB.y + playerB.height &&
-            playerA.y + playerA.height > playerB.y
-        ) {
-            // Horizontal collision checks
-            if (direction === 'left' && playerA.x > playerB.x) {
-                return true;
-            }
-            if (direction === 'right' && playerA.x < playerB.x) {
-                return true;
-            }
-            // Vertical collision checks
-            if (direction === 'up' && playerA.y > playerB.y) {
-                return true;
-            }
-            if (direction === 'down' && playerA.y < playerB.y) {
-                return true;
+            if (defender.health === 0) {
+                declareWinner();
             }
         }
-        return false;
+        setAttackCooldown(attacker);
     }
+}
 
-    // Event listener for keydown events
-    window.addEventListener('keydown', (e) => {
-        if (gameOver) return;
-        if (e.key === 'p') {
-            gamePaused = !gamePaused;
-            if (!gamePaused) {
-                startTimer();
-                gameLoop();
-            } else {
-                clearInterval(interval);
-            }
+// Function to set the attack cooldown
+function setAttackCooldown(player) {
+    player.canAttack = false;
+    setTimeout(() => {
+        player.canAttack = true;
+    }, 500);
+}
+
+// Function to update health bars for both players
+function updateHealthBars() {
+    const player1HealthBar = document.getElementById('player1-health');
+    const player2HealthBar = document.getElementById('player2-health');
+    player1HealthBar.style.width = player1.health + '%';
+    player2HealthBar.style.width = player2.health + '%';
+    player1HealthBar.innerText = `Player 1: ${player1.health}%`;
+    player2HealthBar.innerText = `Player 2: ${player2.health}%`;
+}
+
+// Function to check for collisions between players
+function checkCollision(playerA, playerB) {
+    if (
+        playerA.x < playerB.x + playerB.width &&
+        playerA.x + playerA.width > playerB.x &&
+        playerA.y < playerB.y + playerB.height &&
+        playerA.y + playerA.height > playerB.y
+    ) {
+        // Handle collision (e.g., stop movement, push back players, reduce speed)
+        console.log('Collision detected');
+    }
+}
+
+// Function to determine if players are colliding to prevent walking through each other
+function isColliding(playerA, playerB, direction) {
+    if (
+        playerA.x < playerB.x + playerB.width &&
+        playerA.x + playerA.width > playerB.x &&
+        playerA.y < playerB.y + playerB.height &&
+        playerA.y + playerA.height > playerB.y
+    ) {
+        // Horizontal collision checks
+        if (direction === 'left' && playerA.x > playerB.x) {
+            return true;
+        }
+        if (direction === 'right' && playerA.x < playerB.x) {
+            return true;
+        }
+        // Vertical collision checks
+        if (direction === 'up' && playerA.y > playerB.y) {
+            return true;
+        }
+        if (direction === 'down' && playerA.y < playerB.y) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Event listener for keydown events
+window.addEventListener('keydown', (e) => {
+    if (gameOver) return;
+    if (e.key === 'p') {
+        gamePaused = !gamePaused;
+        if (!gamePaused) {
+            startTimer();
+            gameLoop();
         } else {
-            keys[e.key] = true;
-            if (e.key === ' ' && !player1.blocking) {
-                attack(player1, player2);
-            }
-            if (e.key === 'Enter' && !player2.blocking) {
-                attack(player2, player1);
-            }
+            clearInterval(interval);
         }
-    });
+    } else {
+        keys[e.key] = true;
+        if (e.key === ' ' && !player1.blocking) {
+            attack(player1, player2);
+        }
+        if (e.key === 'Enter' && !player2.blocking) {
+            attack(player2, player1);
+        }
+    }
+});
 
-    // Event listener for keyup events
-    window.addEventListener('keyup', (e) => {
-        keys[e.key] = false;
-        if (e.key === 'Shift') player1.blocking = false;
-        if (e.key === 'Control') player2.blocking = false;
-    });
+// Event listener for keyup events
+window.addEventListener('keyup', (e) => {
+    keys[e.key] = false;
+    if (e.key === 'Shift') player1.blocking = false;
+    if (e.key === 'Control') player2.blocking = false;
+});
