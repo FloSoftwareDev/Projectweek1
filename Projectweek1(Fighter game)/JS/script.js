@@ -7,11 +7,6 @@ const menuMusic = new Audio('Soundtracks/Menu.mp3');
 const gameMusic = new Audio('Soundtracks/Battle.mp3');
 
 // Start menu music after user interaction to comply with autoplay policies
-window.addEventListener('click', () => {
-    menuMusic.play().catch(error => {
-        console.log('Autoplay was prevented. User interaction is required to start audio:', error);
-    });
-}, { once: true });
 menuMusic.loop = true;
 gameMusic.loop = true;
 
@@ -169,15 +164,13 @@ function startTimer() {
 
 // Function to declare the winner based on players' health
 function declareWinner() {
-    const gameOverSound = new Audio('Soundtracks/GameOver.mp3');
+    const gameOverSound = new Audio('Soundtracks/game_over.mp3');
     gameMusic.pause();
     gamePaused = true;
     gameOverSound.play();
     gameOverSound.onended = () => {
         gamePaused = false;
-        menuMusic.play().catch(error => {
-            console.log('Autoplay was prevented after game over:', error);
-        });
+        menuMusic.play()
     };
     clearInterval(interval);
     let winner = player1.health > player2.health
