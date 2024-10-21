@@ -46,6 +46,14 @@ let platform = {
     height: 20
 };
 
+// Additional platform that players can jump on
+let additionalPlatform = {
+    x: 300,
+    y: 300,
+    width: 200,
+    height: 20
+};
+
 // Event listeners for play and restart buttons
 document.getElementById('playButton').onclick = startBattle;
 document.getElementById('restartButton').onclick = startBattle;
@@ -131,6 +139,7 @@ function gameLoop() {
     if (gameOver || gamePaused) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawPlatform();
+    drawAdditionalPlatform();
     drawStickman(player1);
     drawStickman(player2);
     applyGravity(player1);
@@ -150,6 +159,15 @@ function gameLoop() {
 function drawPlatform() {
     ctx.fillStyle = 'brown';
     ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+}
+
+// Function to draw the additional platform
+function drawAdditionalPlatform() {
+    ctx.fillStyle = 'green';
+    ctx.fillRect(additionalPlatform.x, additionalPlatform.y, additionalPlatform.width, additionalPlatform.height);
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(additionalPlatform.x, additionalPlatform.y, additionalPlatform.width, additionalPlatform.height);
 }
 
 // Function to draw the remaining time at the top center of the canvas
@@ -187,6 +205,9 @@ function drawStickman(player) {
 // Function to apply gravity and manage the jumping arc for players
 function applyGravity(player) {
     const groundLevel = canvas.height - player.height;
+    const platformLevel = additionalPlatform.y - player.height;
+    const onAdditionalPlatform = player.x + player.width > additionalPlatform.x && player.x < additionalPlatform.x + additionalPlatform.width && player.y + player.height >= platformLevel;
+    
     if (player.jumping) {
         player.jumpProgress += 0.1;
         let jumpOffset = Math.sin(player.jumpProgress) * player.jumpHeight;
@@ -195,6 +216,8 @@ function applyGravity(player) {
             player.jumping = false;
             player.y = groundLevel;
         }
+    } else if (onAdditionalPlatform && player.y + player.height >= platformLevel && player.y <= additionalPlatform.y) {
+        player.y = platformLevel;
     } else if (player.y + player.height < groundLevel) {
         player.y += gravity;
     }
