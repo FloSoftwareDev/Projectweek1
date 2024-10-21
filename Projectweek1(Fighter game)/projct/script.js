@@ -14,20 +14,22 @@ const slapImages = ['01.png', '02.png', '03.png', '04.png', '05.png'].map(src =>
 });
 
 // Player properties
-const createPlayer = (x, y) => ({
-    x, y, width: 40, height: 60, health: 100, jumping: false,
-    jumpProgress: 0, jumpHeight: 80, attacking: false,
-    currentSlapFrame: 0, slapAnimationTimer: 0
+const createPlayer = (x, y, color) => ({
+    x, y, width: 40, height: 60, health: 100, color,
+    jumping: false, jumpProgress: 0, jumpHeight: 80,
+    canAttack: true, blocking: false, currentSlapFrame: 0, slapAnimationTimer: 0
 });
 
-let player1 = createPlayer(50, 350);
-let player2 = createPlayer(700, 350);
+let player1 = createPlayer(50, 350, 'blue');
+let player2 = createPlayer(700, 350, 'red');
 
 // Global variables
 let gravity = 0.5;
 let keys = {};
 let timer = 60;
 let interval;
+let gameOver = false;
+let gamePaused = false;
 let score1 = 0, score2 = 0;
 
 const platform = { x: 200, y: 400, width: 400, height: 20 };
@@ -54,10 +56,13 @@ function startBattle() {
 
 function startTimer() {
     interval = setInterval(() => {
-        timer--;
-        if (timer <= 0) {
-            clearInterval(interval);
-            declareWinner();
+        if (!gameOver && !gamePaused) {
+            timer--;
+            document.getElementById('timer').innerText = `Tijd: ${timer} s`;
+            if (timer <= 0) {
+                clearInterval(interval);
+                declareWinner();
+            }
         }
     }, 1000);
 }
@@ -71,6 +76,7 @@ function declareWinner() {
     if (winner === 'Player 1 Wins!') score1++;
     if (winner === 'Player 2 Wins!') score2++;
     updateScores();
+    gameOver = true;
 }
 
 function updateScores() {
@@ -79,7 +85,9 @@ function updateScores() {
 }
 
 function gameLoop() {
+    if (gameOver || gamePaused) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBackground();
     drawPlatform();
     drawStickman(player1);
     drawStickman(player2);
@@ -92,10 +100,16 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
+function drawBackground() {
+    ctx.fillStyle = '#87CEEB'; // Lichte blauwe lucht
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
 function handlePlayerMovement(player, leftKey, rightKey, jumpKey) {
     if (keys[leftKey] && player.x > 0) player.x -= 5;
     if (keys[rightKey] && player.x < canvas.width - player.width) player.x += 5;
     if (keys[jumpKey]) jump(player);
+    if (keys['Shift']) player.blocking = true; // Start blocking
 }
 
 function drawPlatform() {
@@ -104,10 +118,34 @@ function drawPlatform() {
 }
 
 function drawStickman(player) {
-    const image = player.attacking ? slapImages[player.currentSlapFrame] : stickmanImage;
-    ctx.drawImage(image, player.x, player.y - player.height, player.width, player.height);
-    ctx.fillStyle = 'black';
-    ctx.fillText(`Health: ${player.health}`, player.x, player.y - player.height - 10);
+    ctx.fillStyle = player.color;
+    ctx.beginPath();
+    ctx.arc(player.x + player.width / 2, player.y - player.height + 15, 10, 0, Math.PI * 2); // Hoofd
+    ctx.fill();
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 2;
+    
+    // Lichaam
+    ctx.beginPath();
+    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 25);
+    ctx.lineTo(player.x + player.width / 2, player.y - player.height + 50);
+    ctx.stroke();
+
+    // Armen
+    ctx.beginPath();
+    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 30);
+    ctx.lineTo(player.x, player.y - player.height + 40);
+    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 30);
+    ctx.lineTo(player.x + player.width, player.y - player.height + 40);
+    ctx.stroke();
+
+    // Benen
+    ctx.beginPath();
+    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 50);
+    ctx.lineTo(player.x, player.y - player.height + 70);
+    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 50);
+    ctx.lineTo(player.x + player.width, player.y - player.height + 70);
+    ctx.stroke();
 }
 
 function applyGravity(player) {
@@ -125,24 +163,26 @@ function applyGravity(player) {
 }
 
 function jump(player) {
-    if (!player.jumping) {
+    if (!player.jumping && !gameOver) {
         player.jumping = true;
         player.jumpProgress = 0;
     }
 }
 
-let canAttack1 = true, canAttack2 = true;
-const attackCooldown = 500;
-
-function attack(attacker, defender, canAttack, setCooldown) {
-    if (canAttack && isColliding(attacker, defender)) {
-        defender.health = Math.max(0, defender.health - 10);
-        updateHealthBars();
-        if (defender.health === 0) declareWinner();
-        startAttackAnimation(attacker);
-        setCooldown(false);
-        setTimeout(() => setCooldown(true), attackCooldown);
+function attack(attacker, defender) {
+    if (attacker.canAttack && isColliding(attacker, defender)) {
+        if (!defender.blocking) {
+            defender.health = Math.max(0, defender.health - 10);
+            updateHealthBars();
+            if (defender.health === 0) declareWinner();
+        }
+        startAttackCooldown(attacker);
     }
+}
+
+function startAttackCooldown(player) {
+    player.canAttack = false;
+    setTimeout(() => player.canAttack = true, 500);
 }
 
 function isColliding(attacker, defender) {
@@ -151,12 +191,6 @@ function isColliding(attacker, defender) {
         attacker.x < defender.x + defender.width &&
         Math.abs(attacker.y - defender.y) < 50
     );
-}
-
-function startAttackAnimation(attacker) {
-    attacker.attacking = true;
-    attacker.currentSlapFrame = 0;
-    attacker.slapAnimationTimer = 0;
 }
 
 function updateSlapAnimation(player) {
@@ -180,12 +214,23 @@ function updateHealthBars() {
 
 window.addEventListener('keydown', (e) => {
     keys[e.key] = true;
-    if (e.key === ' ') attack(player1, player2, canAttack1, (state) => canAttack1 = state);
-    if (e.key === 'Enter') attack(player2, player1, canAttack2, (state) => canAttack2 = state);
+    if (e.key === 'p') {
+        gamePaused = !gamePaused;
+        if (!gamePaused) {
+            startTimer();
+            gameLoop();
+        } else {
+            clearInterval(interval);
+        }
+    }
+    if (e.key === ' ' && !player1.blocking) attack(player1, player2);
+    if (e.key === 'Enter' && !player2.blocking) attack(player2, player1);
 });
 
 window.addEventListener('keyup', (e) => {
     keys[e.key] = false;
+    if (e.key === 'Shift') player1.blocking = false;
+    if (e.key === 'Control') player2.blocking = false;
 });
 
 // Start the game when the stickman image is loaded
