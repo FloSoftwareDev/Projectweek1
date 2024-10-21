@@ -2,6 +2,12 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// Audio elements for background music
+const menuMusic = new Audio('menu-music.mp3');
+const gameMusic = new Audio('game-music.mp3');
+menuMusic.loop = true;
+gameMusic.loop = true;
+
 // Player properties for player1 and player2
 let player1 = {
     x: 50,
@@ -31,7 +37,7 @@ let player2 = {
 };
 
 // Global game variables
-let gravity = 0.5; // Gravity applied to players
+let gravity = 2.0; // Gravity applied to players
 let keys = {}; // Stores key states (pressed or not)
 let timer = 60; // Timer for the game duration
 let interval; // For the timer interval
@@ -41,13 +47,23 @@ let gamePaused = false; // Track if the game is paused
 // Event listeners for play and restart buttons
 document
     .getElementById('playButton')
-    .onclick = startBattle;
+    .onclick = () => {
+        menuMusic.pause();
+        gameMusic.play();
+        startBattle();
+    };
 document
     .getElementById('restartButton')
-    .onclick = startBattle;
+    .onclick = () => {
+        menuMusic.pause();
+        gameMusic.play();
+        startBattle();
+    };
 document
     .getElementById('backButton')
     .onclick = () => {
+        gameMusic.pause();
+        menuMusic.play();
         document
             .getElementById('menu')
             .style
@@ -356,7 +372,7 @@ window.addEventListener('keyup', (e) => {
     keys[e.key] = false;
     if (e.key === 'Shift') 
         player1.blocking = false;
-    if (e.key === 'Control') 
+    if (e.key === '/') 
         player2.blocking = false;
     }
 );
