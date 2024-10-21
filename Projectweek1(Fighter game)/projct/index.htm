@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Battle Game</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Stickman Game</title>
+    <link rel="stylesheet" href="style.css"> <!-- Verwijs naar je CSS bestand -->
 </head>
 <body>
     <div class="bg">
         <div id="menu">
-            <h1>Battle Game</h1>
-            <button id="playButton" class="menu-button" aria-label="Start het spel">Play Game</button>
+            <h1>Stickman Game</h1>
+            <button id="playButton" class="menu-button">Spelen</button>
+            <button id="restartButton" class="menu-button hidden">Opnieuw</button>
+            <button id="backButton" class="menu-button hidden">Terug naar Menu</button>
         </div>
-        <div id="result" style="display: none;">
+        <div id="result" class="hidden">
             <h1 id="winner"></h1>
             <div id="score1"></div>
             <div id="score2"></div>
-            <button id="restartButton" class="menu-button" aria-label="Herstart het spel">Restart Game</button>
-            <button id="backButton" class="menu-button" aria-label="Terug naar het menu">Back to Menu</button>
         </div>
-        <div id="player1-health-container" class="health-container">
-            <div id="player1-health" class="health-bar"></div>
+        <div class="health-container" id="player1-health-container">
+            <div class="health-bar" id="player1-health">100%</div>
         </div>
-        <div id="player2-health-container" class="health-container">
-            <div id="player2-health" class="health-bar"></div>
+        <div class="health-container" id="player2-health-container">
+            <div class="health-bar" id="player2-health">100%</div>
         </div>
-        <canvas id="gameCanvas" width="800" height="400" class="hidden"></canvas>
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="timer">Tijd: 60 s</div>
     </div>
-
-    <script src="script.js"></script>
+    <script src="script.js"></script> <!-- Verwijs naar je JS bestand -->
 </body>
 </html>
