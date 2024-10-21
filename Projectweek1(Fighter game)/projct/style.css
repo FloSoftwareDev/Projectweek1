@@ -1,0 +1,54 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e0e0e0;
+    text-align: center;
+    padding: 20px;
+}
+
+#menu {
+    margin-top: 50px;
+}
+
+.menu-button {
+    padding: 12px 25px;
+    font-size: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.menu-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.health-container {
+    width: 100%;
+    background-color: #ccc;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.health-bar {
+    height: 20px;
+    background-color: #28a745;
+    transition: width 0.3s;
+    border-radius: 5px;
+}
+
+#score1, #score2 {
+    font-size: 22px;
+    margin: 10px 0;
+    color: #333;
+}
+
+canvas {
+    display: block;
+    margin: 20px auto;
+    border: 2px solid #007bff;
+    background-color: white;
+    border-radius: 5px;
+}

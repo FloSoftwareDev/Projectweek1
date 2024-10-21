@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="menu">
+        <button id="playButton" class="menu-button" aria-label="Start het spel">Play Game</button>
+    </div>
+    <div id="result" style="display: none;">
+        <h1 id="winner"></h1>
+        <div id="score1"></div>
+        <div id="score2"></div>
+        <button id="restartButton" class="menu-button" aria-label="Herstart het spel">Restart Game</button>
+        <button id="backButton" class="menu-button" aria-label="Terug naar het menu">Back to Menu</button>
+    </div>
+    <div id="player1-health-container" class="health-container">
+        <div id="player1-health" class="health-bar"></div>
+    </div>
+    <div id="player2-health-container" class="health-container">
+        <div id="player2-health" class="health-bar"></div>
+    </div>
+    <canvas id="gameCanvas" width="800" height="400" class="hidden"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
