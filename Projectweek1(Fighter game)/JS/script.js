@@ -39,7 +39,7 @@ let player2 = {
 };
 
 // Global game variables
-let gravity = 2.0; // Gravity applied to players
+let gravity = 1.5; // Gravity applied to players (reduced for slower fall speed)
 let keys = {}; // Stores key states (pressed or not)
 let timer = 60; // Timer for the game duration
 let interval; // For the timer interval
@@ -204,15 +204,15 @@ function gameLoop() {
     if (player2.y > 340) 
         player2.y = 340; // Stop player2 at the platform level
     if (keys['a'] && player1.x > 0 && !gameOver && !isColliding(player1, player2, 'left')) 
-        player1.x -= 5;
+        player1.x -= 1.5; // Reduced movement speed to slow down walking
     if (keys['d'] && player1.x < canvas.width - player1.width && !gameOver && !isColliding(player1, player2, 'right')) 
-        player1.x += 5;
+        player1.x += 1.5; // Reduced movement speed to slow down walking
     if (keys['w'] && !gameOver && !isColliding(player1, player2, 'up')) 
         jump(player1);
     if (keys['ArrowLeft'] && player2.x > 0 && !gameOver && !isColliding(player2, player1, 'left')) 
-        player2.x -= 5;
+        player2.x -= 1.5; // Reduced movement speed to slow down walking
     if (keys['ArrowRight'] && player2.x < canvas.width - player2.width && !gameOver && !isColliding(player2, player1, 'right')) 
-        player2.x += 5;
+        player2.x += 1.5; // Reduced movement speed to slow down walking
     if (keys['ArrowUp'] && !gameOver && !isColliding(player2, player1, 'up')) 
         jump(player2);
     checkCollision(player1, player2);
@@ -268,7 +268,7 @@ function drawStickman(player) {
 function applyGravity(player) {
     const groundLevel = 340; // Platform height
     if (player.jumping) {
-        player.jumpProgress += 0.1;
+        player.jumpProgress += 0.02; // Slowed down the jump progress increment for slower jumping
         let jumpOffset = Math.sin(player.jumpProgress) * player.jumpHeight;
         player.y = groundLevel - jumpOffset;
         if (player.jumpProgress >= Math.PI) {
