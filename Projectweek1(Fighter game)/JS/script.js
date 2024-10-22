@@ -10,43 +10,61 @@ const gameMusic = new Audio('Soundtracks/Battle.mp3');
 menuMusic.loop = true;
 gameMusic.loop = true;
 
+// Player properties template for character selection
+const characters = [
+    { name: 'Warrior', health: 120, damage: 15, speed: 1.2, color: 'blue', attackRange: 50 },
+    { name: 'Mage', health: 80, damage: 25, speed: 1.0, color: 'purple', attackRange: 350 },
+    { name: 'Rogue', health: 100, damage: 20, speed: 1.5, color: 'green', attackRange: 40 },
+    { name: 'Tank', health: 150, damage: 10, speed: 0.8, color: 'gray', attackRange: 45 },
+    { name: 'Archer', health: 90, damage: 18, speed: 1.4, color: 'orange', attackRange: 400 },
+    { name: 'Paladin', health: 130, damage: 13, speed: 1.0, color: 'white', attackRange: 50 },
+    { name: 'Berserker', health: 110, damage: 22, speed: 1.1, color: 'red', attackRange: 55 },
+    { name: 'Ninja', health: 85, damage: 23, speed: 1.6, color: 'black', attackRange: 60 }
+];
+
+let player1Character = characters[0]; // Default to Warrior
+let player2Character = characters[1]; // Default to Mage
+
 // Player properties for player1 and player2
-let player1 = {
-    x: 50,
-    y: 300,
-    width: 40,
-    height: 60,
-    health: 100,
-    color: 'blue',
-    jumping: false,
-    jumpProgress: 0,
-    jumpHeight: 80,
-    canAttack: true,
-    blocking: false
-};
-let player2 = {
-    x: 700,
-    y: 300,
-    width: 40,
-    height: 60,
-    health: 100,
-    color: 'red',
-    jumping: false,
-    jumpProgress: 0,
-    jumpHeight: 80,
-    canAttack: true,
-    blocking: false
-};
+let player1 = createPlayer(player1Character, 50, 300);
+let player2 = createPlayer(player2Character, 700, 300);
+
+function createPlayer(character, x, y) {
+    return {
+        x: x,
+        y: y,
+        width: 40,
+        height: 60,
+        health: character.health,
+        damage: character.damage,
+        speed: character.speed,
+        color: character.color,
+        attackRange: character.attackRange,
+        x: x,
+        y: y,
+        width: 40,
+        height: 60,
+        health: character.health,
+        damage: character.damage,
+        speed: character.speed,
+        color: character.color,
+        jumping: false,
+        jumpProgress: 0,
+        jumpHeight: 80,
+        canAttack: true,
+        blocking: false
+    };
+}
 
 // Global game variables
-let gravity = 1.5; // Gravity applied to players (reduced for slower fall speed)
+let gravity = 1.5; // Gravity applied to players
 let keys = {}; // Stores key states (pressed or not)
 let timer = 60; // Timer for the game duration
 let interval; // For the timer interval
 let gameOver = false; // Track if the game is over
 let gamePaused = false; // Track if the game is paused
 
-// Event listeners for play and restart buttons
+// Event listeners for play, restart, and character selection buttons
 document
     .getElementById('playButton')
     .onclick = () => {
@@ -86,7 +104,49 @@ document
             .getElementById('player2-health-container')
             .style
             .display = 'none';
+        document.getElementById('character-selection-container').style.display = 'block';
     };
+
+// Character selection logic
+document.addEventListener('DOMContentLoaded', () => {
+    const characterSelectionContainer = document.createElement('div');
+    characterSelectionContainer.id = 'character-selection-container';
+    characterSelectionContainer.innerHTML = '<h2>Select Characters for Player 1 and Player 2:</h2>';
+
+    const player1Selection = document.createElement('div');
+    player1Selection.id = 'player1-selection';
+    player1Selection.innerHTML = '<h3>Player 1:</h3>';
+    characters.forEach((character) => {
+        const characterButton = document.createElement('button');
+        characterButton.className = 'character-button';
+        characterButton.innerText = character.name;
+        characterButton.onclick = () => {
+            player1Character = character;
+            document.querySelectorAll('#player1-selection .character-button').forEach(button => button.style.backgroundColor = '');
+            characterButton.style.backgroundColor = 'purple';
+        };
+        player1Selection.appendChild(characterButton);
+    });
+
+    const player2Selection = document.createElement('div');
+    player2Selection.id = 'player2-selection';
+    player2Selection.innerHTML = '<h3>Player 2:</h3>';
+    characters.forEach((character) => {
+        const characterButton = document.createElement('button');
+        characterButton.className = 'character-button';
+        characterButton.innerText = character.name;
+        characterButton.onclick = () => {
+            player2Character = character;
+            document.querySelectorAll('#player2-selection .character-button').forEach(button => button.style.backgroundColor = '');
+            characterButton.style.backgroundColor = 'purple';
+        };
+        player2Selection.appendChild(characterButton);
+    });
+
+    characterSelectionContainer.appendChild(player1Selection);
+    characterSelectionContainer.appendChild(player2Selection);
+    document.body.insertBefore(characterSelectionContainer, document.getElementById('menu'));
+});
 
 // Function to start the battle and initialize game variables
 function startBattle() {
@@ -110,35 +170,10 @@ function startBattle() {
         .getElementById('player2-health-container')
         .style
         .display = 'block';
-    player1.health = 100;
-    player2.health = 100;
-    updateHealthBars();
-    player1 = {
-        x: 50,
-        y: 300,
-        width: 40,
-        height: 60,
-        health: 100,
-        color: 'blue',
-        jumping: false,
-        jumpProgress: 0,
-        jumpHeight: 80,
-        canAttack: true,
-        blocking: false
-    };
-    player2 = {
-        x: 700,
-        y: 300,
-        width: 40,
-        height: 60,
-        health: 100,
-        color: 'red',
-        jumping: false,
-        jumpProgress: 0,
-        jumpHeight: 80,
-        canAttack: true,
-        blocking: false
-    };
+    document.getElementById('character-selection-container').style.display = 'none';
+
+    player1 = createPlayer(player1Character, 50, 300);
+    player2 = createPlayer(player2Character, 700, 300);
     keys = {};
     timer = 60;
     gameOver = false;
@@ -170,7 +205,7 @@ function declareWinner() {
     gameOverSound.play();
     gameOverSound.onended = () => {
         gamePaused = false;
-        menuMusic.play()
+        menuMusic.play();
     };
     clearInterval(interval);
     let winner = player1.health > player2.health
@@ -204,15 +239,15 @@ function gameLoop() {
     if (player2.y > 340) 
         player2.y = 340; // Stop player2 at the platform level
     if (keys['a'] && player1.x > 0 && !gameOver && !isColliding(player1, player2, 'left')) 
-        player1.x -= 1.5; // Reduced movement speed to slow down walking
+        player1.x -= player1.speed; // Use player-specific speed for movement
     if (keys['d'] && player1.x < canvas.width - player1.width && !gameOver && !isColliding(player1, player2, 'right')) 
-        player1.x += 1.5; // Reduced movement speed to slow down walking
+        player1.x += player1.speed; // Use player-specific speed for movement
     if (keys['w'] && !gameOver && !isColliding(player1, player2, 'up')) 
         jump(player1);
     if (keys['ArrowLeft'] && player2.x > 0 && !gameOver && !isColliding(player2, player1, 'left')) 
-        player2.x -= 1.5; // Reduced movement speed to slow down walking
+        player2.x -= player2.speed; // Use player-specific speed for movement
     if (keys['ArrowRight'] && player2.x < canvas.width - player2.width && !gameOver && !isColliding(player2, player1, 'right')) 
-        player2.x += 1.5; // Reduced movement speed to slow down walking
+        player2.x += player2.speed; // Use player-specific speed for movement
     if (keys['ArrowUp'] && !gameOver && !isColliding(player2, player1, 'up')) 
         jump(player2);
     checkCollision(player1, player2);
@@ -291,12 +326,13 @@ function jump(player) {
 // Function to handle attacks between players
 function attack(attacker, defender) {
     if (attacker.canAttack && !gameOver) {
-        if (attacker.x + attacker.width > defender.x && attacker.x < defender.x + defender.width && Math.abs(attacker.y - defender.y) < 50) {
+        const inRange = Math.abs(attacker.x - defender.x) <= attacker.attackRange;
+        if (inRange && Math.abs(attacker.y - defender.y) < 50) {
             if (!defender.blocking) {
-                defender.health -= 10;
+                defender.health -= attacker.damage;
                 if (defender.health < 0) 
                     defender.health = 0;
-                }
+            }
             updateHealthBars();
             if (defender.health === 0) {
                 declareWinner();
