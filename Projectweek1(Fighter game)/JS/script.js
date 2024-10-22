@@ -409,6 +409,12 @@ window.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !player2.blocking) {
             attack(player2, player1);
         }
+        if (e.key === 'o') {
+            player1.blocking = true;
+        }
+        if (e.key === '/') {
+            player2.blocking = true;
+        }
     }
 });
 
