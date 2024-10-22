@@ -1,118 +1,166 @@
-/* General body styling */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #e0e0e0;
-}
+        /* General body styling */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
 
-/* Background styling */
-.bg {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-size: 300% 300%;
-    background-image: linear-gradient(-45deg, #237735 0%, #ffbb00 50%, #481f69 100%);
-    animation: AnimateBG 20s ease infinite;
-}
+        @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:200');
 
-@keyframes AnimateBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+        body {
+            background-image: url('https://static.pexels.com/photos/414171/pexels-photo-414171.jpeg');
+            background-size: cover;
+            -webkit-animation: slidein 100s;
+            animation: slidein 100s;
 
-/* Styling for the main menu */
-#menu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-}
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
 
-/* Button styles for the menu */
-.menu-button {
-    padding: 20px 40px;
-    font-size: 24px;
-    margin: 10px;
-    cursor: pointer;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-}
+            -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
 
-.menu-button:hover {
-    background-color: #2980b9;
-}
+            -webkit-animation-direction: alternate;
+            animation-direction: alternate;
+        }
 
-/* Results display styling */
-#result {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-}
+        @-webkit-keyframes slidein {
+            from {
+                background-position: top;
+                background-size: 3000px;
+            }
 
-/* Heading style in results */
-h1 {
-    font-size: 36px;
-    color: #333;
-}
+            to {
+                background-position: -100px 0px;
+                background-size: 2750px;
+            }
+        }
 
-/* Health bar container styling */
-.health-container {
-    width: 300px;
-    height: 25px;
-    background-color: #ddd;
-    border-radius: 12px;
-    display: none;
-    position: absolute;
-    top: 20px;
-}
+        @keyframes slidein {
+            from {
+                background-position: top;
+                background-size: 3000px;
+            }
 
-/* Health bar styling */
-.health-bar {
-    height: 100%;
-    background-color: rgb(128, 0, 0);
-    border-radius: 12px;
-    color: white;
-    text-align: center;
-    line-height: 25px;
-    font-weight: bold;
-}
+            to {
+                background-position: -100px 0px;
+                background-size: 2750px;
+            }
 
-/* Positioning for Player 1's health bar */
-#player1-health-container {
-    left: 20px;
-}
+        }
 
-/* Positioning for Player 2's health bar */
-#player2-health-container {
-    right: 20px;
-}
 
-/* Canvas styling for the game area */
-canvas {
-    display: block;
-    margin-top: 20px;
-    border: 5px solid #000;
-    border-radius: 10px;
-    position: relative;
-}
 
-/* Class to hide elements */
-.hidden {
-    display: none;
-}
+        .center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            margin: auto;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(75, 75, 250, 0.3);
+            border-radius: 3px;
+        }
+
+        .center h1 {
+            text-align: center;
+            color: white;
+            font-family: 'Source Code Pro', monospace;
+            text-transform: uppercase;
+        }
+
+        /* Styling for the main menu */
+        #menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        /* Button styles for the menu */
+        .menu-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            margin: 20px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover effect for buttons */
+        .menu-button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Results display styling */
+        #result {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        /* Heading style in results */
+        h1 {
+            font-size: 36px;
+            color: #333;
+        }
+
+        /* Health bar container styling */
+        .health-container {
+            width: 300px;
+            height: 25px;
+            background-color: #ddd;
+            border-radius: 12px;
+            display: none;
+            position: absolute;
+            top: 20px;
+        }
+
+        /* Health bar styling */
+        .health-bar {
+            height: 100%;
+            background-color: green;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            line-height: 25px;
+            font-weight: bold;
+        }
+
+        /* Positioning for Player 1's health bar */
+        #player1-health-container {
+            left: 20px;
+        }
+
+        /* Positioning for Player 2's health bar */
+        #player2-health-container {
+            right: 20px;
+        }
+
+        /* Canvas styling for the game area */
+        canvas {
+            display: block;
+            margin-top: 20px;
+            border: 5px solid #000;
+            border-radius: 10px;
+            position: absolute;
+        }
+
+        /* Class to hide elements */
+        .hidden {
+            display: none;
+        }

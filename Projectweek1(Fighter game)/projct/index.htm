@@ -1,33 +1,38 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stickman Game</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Battle Game</title>
+    <link rel="stylesheet" href="stayle.css">
+
 </head>
+
 <body>
-    <div class="bg">
-        <div id="menu">
-            <h1>Welkom bij het Stickman Spel</h1>
-            <button id="playButton" class="menu-button">Speel</button>
-        </div>
-        <div id="result" class="hidden">
-            <h1 id="winner"></h1>
-            <div id="score1"></div>
-            <div id="score2"></div>
-            <button id="restartButton" class="menu-button">Opnieuw</button>
-            <button id="backButton" class="menu-button">Terug naar Menu</button>
-        </div>
-        <div id="timer" style="font-size: 24px; margin-top: 10px;">Tijd: 60 s</div>
-        <canvas id="gameCanvas" width="800" height="500"></canvas>
-        <div class="health-container" id="player1-health-container">
-            <div class="health-bar" id="player1-health">100%</div>
-        </div>
-        <div class="health-container" id="player2-health-container">
-            <div class="health-bar" id="player2-health">100%</div>
-        </div>
+    <!-- div for the menu with the play button -->
+    <div id="menu">
+        <button id="playButton" class="menu-button">Play Game</button>
     </div>
+    <!-- div for the result of the game and the buttons that appear there -->
+    <div id="result" style="display: none;">
+        <h1 id="winner"></h1>
+        <button id="restartButton" class="menu-button">Restart Game</button>
+        <button id="backButton" class="menu-button">Back to Menu</button>
+    </div>
+    <!-- div for the health bars -->
+    <div id="player1-health-container" class="health-container hidden">
+        <div id="player1-health" class="health-bar"></div>
+    </div>
+    <div id="player2-health-container" class="health-container hidden">
+        <div id="player2-health" class="health-bar"></div>
+    </div>
+    <!-- the game is played on this canvas -->
+
+    <canvas id="gameCanvas" width="800" height="400" class="hidden"></canvas>
+
     <script src="script.js"></script>
+
 </body>
+
 </html>
