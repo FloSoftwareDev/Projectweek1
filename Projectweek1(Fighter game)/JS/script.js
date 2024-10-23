@@ -11,15 +11,30 @@ menuMusic.loop = true;
 gameMusic.loop = true;
 
 // Player properties template for character selection
+const warriorImage = new Image();
+warriorImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const mageImage = new Image();
+mageImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const rogueImage = new Image();
+rogueImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const tankImage = new Image();
+tankImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const archerImage = new Image();
+archerImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const paladinImage = new Image();
+paladinImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const berserkerImage = new Image();
+berserkerImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+
 const characters = [
-    { name: 'Warrior', health: 120, damage: 15, speed: 1.2, color: 'blue', attackRange: 50 },
-    { name: 'Mage', health: 80, damage: 25, speed: 1.0, color: 'purple', attackRange: 350 },
-    { name: 'Rogue', health: 100, damage: 20, speed: 1.5, color: 'green', attackRange: 40 },
-    { name: 'Tank', health: 150, damage: 10, speed: 0.8, color: 'gray', attackRange: 45 },
-    { name: 'Archer', health: 90, damage: 18, speed: 1.4, color: 'orange', attackRange: 400 },
-    { name: 'Paladin', health: 130, damage: 13, speed: 1.0, color: 'white', attackRange: 50 },
-    { name: 'Berserker', health: 110, damage: 22, speed: 1.1, color: 'red', attackRange: 55 },
-    { name: 'Ninja', health: 85, damage: 23, speed: 1.6, color: 'black', attackRange: 60 }
+    { name: 'Warrior', health: 120, damage: 15, speed: 1.2, color: 'blue', attackRange: 50, image: warriorImage },
+    { name: 'Mage', health: 80, damage: 25, speed: 1.0, color: 'purple', attackRange: 350, image: mageImage },
+    { name: 'Rogue', health: 100, damage: 20, speed: 1.5, color: 'green', attackRange: 40, image: rogueImage },
+    { name: 'Tank', health: 150, damage: 10, speed: 0.8, color: 'gray', attackRange: 45, image: tankImage },
+    { name: 'Archer', health: 90, damage: 18, speed: 1.4, color: 'orange', attackRange: 400, image: archerImage },
+    { name: 'Paladin', health: 130, damage: 13, speed: 1.0, color: 'white', attackRange: 50, image: paladinImage },
+    { name: 'Berserker', health: 110, damage: 22, speed: 1.1, color: 'red', attackRange: 55, image: berserkerImage },
+    { name: 'Ninja', health: 85, damage: 23, speed: 1.6, color: 'black', attackRange: 60,  image: mageImage },
 ];
 
 let player1Character = characters[0]; // Default to Warrior
@@ -40,14 +55,7 @@ function createPlayer(character, x, y) {
         speed: character.speed,
         color: character.color,
         attackRange: character.attackRange,
-        x: x,
-        y: y,
-        width: 40,
-        height: 60,
-        health: character.health,
-        damage: character.damage,
-        speed: character.speed,
-        color: character.color,
+        image: character.image, // Voeg de afbeelding toe
         jumping: false,
         jumpProgress: 0,
         jumpHeight: 80,
@@ -230,8 +238,8 @@ function gameLoop() {
         return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawPlatform(); // Draw the platform first
-    drawStickman(player1);
-    drawStickman(player2);
+    drawCharacter(player1); // Gebruik de nieuwe functie
+    drawCharacter(player2); // Gebruik de nieuwe functie
     applyGravity(player1);
     if (player1.y > 340) 
         player1.y = 340; // Stop player1 at the platform level
@@ -269,34 +277,9 @@ function drawTimer() {
     ctx.fillText(`Time: ${timer}`, canvas.width / 2, 50);
 }
 
-// Function to draw each stickman player
-function drawStickman(player) {
-    ctx.fillStyle = player.color;
-    ctx.beginPath();
-    ctx.arc(
-        player.x + player.width / 2,
-        player.y - player.height + 15,
-        10,
-        0,
-        Math.PI * 2
-    );
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 25);
-    ctx.lineTo(player.x + player.width / 2, player.y - player.height + 50);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 30);
-    ctx.lineTo(player.x, player.y - player.height + 40);
-    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 30);
-    ctx.lineTo(player.x + player.width, player.y - player.height + 40);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 50);
-    ctx.lineTo(player.x, player.y - player.height + 70);
-    ctx.moveTo(player.x + player.width / 2, player.y - player.height + 50);
-    ctx.lineTo(player.x + player.width, player.y - player.height + 70);
-    ctx.stroke();
+// Function to draw each character player
+function drawCharacter(player) {
+    ctx.drawImage(player.image, player.x, player.y - player.height, player.width, player.height); // Tekent de afbeelding
 }
 
 // Function to apply gravity and manage the jumping arc for players
@@ -359,6 +342,7 @@ function updateHealthBars() {
     player1HealthBar.innerText = `Player 1: ${player1.health}%`;
     player2HealthBar.innerText = `Player 2: ${player2.health}%`;
 }
+
 // Function to check for collisions between players
 function checkCollision(playerA, playerB) {
     if (playerA.x < playerB.x + playerB.width && playerA.x + playerA.width > playerB.x && playerA.y < playerB.y + playerB.height && playerA.y + playerA.height > playerB.y) {
