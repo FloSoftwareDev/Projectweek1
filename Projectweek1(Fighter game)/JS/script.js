@@ -11,82 +11,81 @@ menuMusic.loop = true;
 gameMusic.loop = true;
 
 // Player properties template for character selection
-const warriorImage = new Image();
-warriorImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
-const warriorAttackImages = [
+const KeroImage = new Image();
+KeroImage.src = 'IMG/Drax_Idle.png'; // Vervang door het juiste pad
+const KeroAttackImages = [
     new Image(),
     new Image()
 ];
-warriorAttackImages[0].src = 'IMG/attack1.png'; // Vervang door het juiste pad
-warriorAttackImages[1].src = 'IMG/attack2.png'; // Vervang door het juiste pad
+KeroAttackImages[0].src = 'IMG/attack1.png'; // Vervang door het juiste pad
+KeroAttackImages[1].src = 'IMG/attack2.png'; // Vervang door het juiste pad
 
-const mageImage = new Image();
-mageImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
-const mageAttackImages = [
+const LiraImage = new Image();
+LiraImage.src = 'IMG/Orla_Idle.png'; // Vervang door het juiste pad
+const LiraAttackImages = [
     new Image(),
     new Image()
 ];
-mageAttackImages[0].src = 'IMG/attack_mage1.png';
-mageAttackImages[1].src = 'IMG/attack_mage2.png';
+LiraAttackImages[0].src = 'IMG/attack_mage1.png';
+LiraAttackImages[1].src = 'IMG/attack_mage2.png';
 
-const rogueImage = new Image();
-rogueImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
-const rogueAttackImages = [
+const DraxImage = new Image();
+DraxImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const DraxAttackImages = [
     new Image(),
     new Image()
 ];
-rogueAttackImages[0].src = 'IMG/attack_rogue1.png';
-rogueAttackImages[1].src = 'IMG/attack_rogue2.png';
+DraxAttackImages[0].src = 'IMG/attack_Drax1.png';
+DraxAttackImages[1].src = 'IMG/attack_Drax2.png';
 
-const tankImage = new Image();
-tankImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
-const tankAttackImages = [
+const Meester_SumiImage = new Image();
+Meester_SumiImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const Meester_SumiAttackImages = [
     new Image(),
     new Image()
 ];
-tankAttackImages[0].src = 'IMG/attack_tank1.png';
-tankAttackImages[1].src = 'IMG/attack_tank2.png';
+Meester_SumiAttackImages[0].src = 'IMG/attack_Meester_Sumi1.png';
+Meester_SumiAttackImages[1].src = 'IMG/attack_Meester_Sumi2.png';
 
-const archerImage = new Image();
-archerImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
-const archerAttackImages = [
+const ZinImage = new Image();
+ZinImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const ZinAttackImages = [
     new Image(),
     new Image()
 ];
-archerAttackImages[0].src = 'IMG/attack_archer1.png';
-archerAttackImages[1].src = 'IMG/attack_archer2.png';
+ZinAttackImages[0].src = 'IMG/attack_Zin1.png';
+ZinAttackImages[1].src = 'IMG/attack_Zin2.png';
 
-const paladinImage = new Image();
-paladinImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
-const paladinAttackImages = [
+const OrlaImage = new Image();
+OrlaImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const OrlaAttackImages = [
     new Image(),
     new Image()
 ];
-paladinAttackImages[0].src = 'IMG/attack_paladin1.png';
-paladinAttackImages[1].src = 'IMG/attack_paladin2.png';
+OrlaAttackImages[0].src = 'IMG/attack_Orla1.png';
+OrlaAttackImages[1].src = 'IMG/attack_Orla2.png';
 
-const berserkerImage = new Image();
-berserkerImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
-const berserkerAttackImages = [
+const Dark_ForcesImage = new Image();
+Dark_ForcesImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const Dark_ForcesAttackImages = [
     new Image(),
     new Image()
 ];
-berserkerAttackImages[0].src = 'IMG/attack_berserker1.png';
-berserkerAttackImages[1].src = 'IMG/attack_berserker2.png';
+Dark_ForcesAttackImages[0].src = 'IMG/attack_Dark_Forces1.png';
+Dark_ForcesAttackImages[1].src = 'IMG/attack_Dark_Forces2.png';
 
 const characters = [
-    { name: 'Warrior', health: 120, damage: 15, speed: 1.2, color: 'blue', attackRange: 50, image: warriorImage, attackImages: warriorAttackImages },
-    { name: 'Mage', health: 80, damage: 25, speed: 1.0, color: 'purple', attackRange: 350, image: mageImage, attackImages: mageAttackImages },
-    { name: 'Rogue', health: 100, damage: 20, speed: 1.5, color: 'green', attackRange: 40, image: rogueImage, attackImages: rogueAttackImages },
-    { name: 'Tank', health: 150, damage: 10, speed: 0.8, color: 'gray', attackRange: 45, image: tankImage, attackImages: tankAttackImages },
-    { name: 'Archer', health: 90, damage: 18, speed: 1.4, color: 'orange', attackRange: 400, image: archerImage, attackImages: archerAttackImages },
-    { name: 'Paladin', health: 130, damage: 13, speed: 1.0, color: 'white', attackRange: 50, image: paladinImage, attackImages: paladinAttackImages },
-    { name: 'Berserker', health: 110, damage: 22, speed: 1.1, color: 'red', attackRange: 55, image: berserkerImage, attackImages: berserkerAttackImages },
-    { name: 'Ninja', health: 85, damage: 23, speed: 1.6, color: 'black', attackRange: 60,  image: mageImage, attackImages: mageAttackImages },
+    { name: 'Kero', health: 120, damage: 15, speed: 1.2, color: 'blue', attackRange: 50, image: KeroImage, attackImages: KeroAttackImages },
+    { name: 'Lira', health: 80, damage: 25, speed: 1.0, color: 'purple', attackRange: 350, image: LiraImage, attackImages: LiraAttackImages },
+    { name: 'Drax', health: 100, damage: 20, speed: 1.5, color: 'green', attackRange: 40, image: DraxImage, attackImages: DraxAttackImages },
+    { name: 'Meester Sumi', health: 150, damage: 10, speed: 0.8, color: 'gray', attackRange: 45, image: Meester_SumiImage, attackImages: Meester_SumiAttackImages },
+    { name: 'Zin', health: 90, damage: 18, speed: 1.4, color: 'orange', attackRange: 400, image: ZinImage, attackImages: ZinAttackImages },
+    { name: 'Orla', health: 130, damage: 13, speed: 1.0, color: 'white', attackRange: 50, image: OrlaImage, attackImages: OrlaAttackImages },
+    { name: 'Dark Forces', health: 85, damage: 23, speed: 1.6, color: 'black', attackRange: 60,  image: LiraImage, attackImages: Dark_ForcesAttackImages },
 ];
 
-let player1Character = characters[0]; // Default to Warrior
-let player2Character = characters[1]; // Default to Mage
+let player1Character = characters[0]; // Default to Kero
+let player2Character = characters[1]; // Default to Lira
 
 // Player properties for player1 and player2
 let player1 = createPlayer(player1Character, 50, 300);
