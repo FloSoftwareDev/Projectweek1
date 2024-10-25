@@ -13,28 +13,76 @@ gameMusic.loop = true;
 // Player properties template for character selection
 const warriorImage = new Image();
 warriorImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const warriorAttackImages = [
+    new Image(),
+    new Image()
+];
+warriorAttackImages[0].src = 'IMG/attack1.png'; // Vervang door het juiste pad
+warriorAttackImages[1].src = 'IMG/attack2.png'; // Vervang door het juiste pad
+
 const mageImage = new Image();
 mageImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const mageAttackImages = [
+    new Image(),
+    new Image()
+];
+mageAttackImages[0].src = 'IMG/attack_mage1.png';
+mageAttackImages[1].src = 'IMG/attack_mage2.png';
+
 const rogueImage = new Image();
 rogueImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const rogueAttackImages = [
+    new Image(),
+    new Image()
+];
+rogueAttackImages[0].src = 'IMG/attack_rogue1.png';
+rogueAttackImages[1].src = 'IMG/attack_rogue2.png';
+
 const tankImage = new Image();
 tankImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const tankAttackImages = [
+    new Image(),
+    new Image()
+];
+tankAttackImages[0].src = 'IMG/attack_tank1.png';
+tankAttackImages[1].src = 'IMG/attack_tank2.png';
+
 const archerImage = new Image();
 archerImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const archerAttackImages = [
+    new Image(),
+    new Image()
+];
+archerAttackImages[0].src = 'IMG/attack_archer1.png';
+archerAttackImages[1].src = 'IMG/attack_archer2.png';
+
 const paladinImage = new Image();
 paladinImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const paladinAttackImages = [
+    new Image(),
+    new Image()
+];
+paladinAttackImages[0].src = 'IMG/attack_paladin1.png';
+paladinAttackImages[1].src = 'IMG/attack_paladin2.png';
+
 const berserkerImage = new Image();
 berserkerImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
+const berserkerAttackImages = [
+    new Image(),
+    new Image()
+];
+berserkerAttackImages[0].src = 'IMG/attack_berserker1.png';
+berserkerAttackImages[1].src = 'IMG/attack_berserker2.png';
 
 const characters = [
-    { name: 'Warrior', health: 120, damage: 15, speed: 1.2, color: 'blue', attackRange: 50, image: warriorImage },
-    { name: 'Mage', health: 80, damage: 25, speed: 1.0, color: 'purple', attackRange: 350, image: mageImage },
-    { name: 'Rogue', health: 100, damage: 20, speed: 1.5, color: 'green', attackRange: 40, image: rogueImage },
-    { name: 'Tank', health: 150, damage: 10, speed: 0.8, color: 'gray', attackRange: 45, image: tankImage },
-    { name: 'Archer', health: 90, damage: 18, speed: 1.4, color: 'orange', attackRange: 400, image: archerImage },
-    { name: 'Paladin', health: 130, damage: 13, speed: 1.0, color: 'white', attackRange: 50, image: paladinImage },
-    { name: 'Berserker', health: 110, damage: 22, speed: 1.1, color: 'red', attackRange: 55, image: berserkerImage },
-    { name: 'Ninja', health: 85, damage: 23, speed: 1.6, color: 'black', attackRange: 60,  image: mageImage },
+    { name: 'Warrior', health: 120, damage: 15, speed: 1.2, color: 'blue', attackRange: 50, image: warriorImage, attackImages: warriorAttackImages },
+    { name: 'Mage', health: 80, damage: 25, speed: 1.0, color: 'purple', attackRange: 350, image: mageImage, attackImages: mageAttackImages },
+    { name: 'Rogue', health: 100, damage: 20, speed: 1.5, color: 'green', attackRange: 40, image: rogueImage, attackImages: rogueAttackImages },
+    { name: 'Tank', health: 150, damage: 10, speed: 0.8, color: 'gray', attackRange: 45, image: tankImage, attackImages: tankAttackImages },
+    { name: 'Archer', health: 90, damage: 18, speed: 1.4, color: 'orange', attackRange: 400, image: archerImage, attackImages: archerAttackImages },
+    { name: 'Paladin', health: 130, damage: 13, speed: 1.0, color: 'white', attackRange: 50, image: paladinImage, attackImages: paladinAttackImages },
+    { name: 'Berserker', health: 110, damage: 22, speed: 1.1, color: 'red', attackRange: 55, image: berserkerImage, attackImages: berserkerAttackImages },
+    { name: 'Ninja', health: 85, damage: 23, speed: 1.6, color: 'black', attackRange: 60,  image: mageImage, attackImages: mageAttackImages },
 ];
 
 let player1Character = characters[0]; // Default to Warrior
@@ -56,11 +104,14 @@ function createPlayer(character, x, y) {
         color: character.color,
         attackRange: character.attackRange,
         image: character.image, // Voeg de afbeelding toe
+        attackImages: character.attackImages, // Attack images for animation
         jumping: false,
         jumpProgress: 0,
         jumpHeight: 80,
         canAttack: true,
-        blocking: false
+        blocking: false,
+        attacking: false,
+        attackFrame: 0
     };
 }
 
@@ -264,6 +315,7 @@ function gameLoop() {
 }
 
 // Function to draw the platform for players to stand on
+
 function drawPlatform() {
     ctx.fillStyle = '#654321'; // Brown color for the platform
     ctx.fillRect(0, 350, canvas.width, 50); // Draw the platform near the bottom of the canvas
@@ -297,7 +349,6 @@ function applyGravity(player) {
         player.y += gravity;
     }
 }
-
 // Function to make the player jump
 function jump(player) {
     if (!player.jumping && !gameOver) {
@@ -350,7 +401,6 @@ function checkCollision(playerA, playerB) {
         console.log('Collision detected');
     }
 }
-
 // Function to determine if players are colliding to prevent walking through
 // each other
 function isColliding(playerA, playerB, direction) {
@@ -372,7 +422,6 @@ function isColliding(playerA, playerB, direction) {
     }
     return false;
 }
-
 // Event listener for keydown events
 window.addEventListener('keydown', (e) => {
     if (gameOver) 
