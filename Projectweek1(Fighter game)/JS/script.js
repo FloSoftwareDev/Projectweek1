@@ -17,8 +17,8 @@ const KeroAttackImages = [
     new Image(),
     new Image()
 ];
-KeroAttackImages[0].src = 'IMG/attack1.png'; // Vervang door het juiste pad
-KeroAttackImages[1].src = 'IMG/attack2.png'; // Vervang door het juiste pad
+KeroAttackImages[0].src = 'IMG/Kero_attack1.png'; // Vervang door het juiste pad
+KeroAttackImages[1].src = 'IMG/Kero_attack2.png'; // Vervang door het juiste pad
 
 const LiraImage = new Image();
 LiraImage.src = 'IMG/Orla_Idle.png'; // Vervang door het juiste pad
@@ -26,8 +26,8 @@ const LiraAttackImages = [
     new Image(),
     new Image()
 ];
-LiraAttackImages[0].src = 'IMG/attack_mage1.png';
-LiraAttackImages[1].src = 'IMG/attack_mage2.png';
+LiraAttackImages[0].src = 'IMG/attack_Lira1.png';
+LiraAttackImages[1].src = 'IMG/attack_Lira2.png';
 
 const DraxImage = new Image();
 DraxImage.src = 'IMG/idle.png'; // Vervang door het juiste pad
