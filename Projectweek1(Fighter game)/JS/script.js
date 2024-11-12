@@ -12,7 +12,7 @@ gameMusic.loop = true;
 
 // Player properties template for character selection
 const KeroImage = new Image();
-KeroImage.src = 'IMG/Drax_Idle.png'; // Vervang door het juiste pad
+KeroImage.src = 'IMG/Paladin_Idle.png'; // Vervang door het juiste pad
 const KeroAttackImages = [
     new Image(),
     new Image()
@@ -21,7 +21,7 @@ KeroAttackImages[0].src = 'IMG/Kero_attack1.png'; // Vervang door het juiste pad
 KeroAttackImages[1].src = 'IMG/Kero_attack2.png'; // Vervang door het juiste pad
 
 const LiraImage = new Image();
-LiraImage.src = 'IMG/Orla_Idle.png'; // Vervang door het juiste pad
+LiraImage.src = 'IMG/Rogue_Idle.png'; // Vervang door het juiste pad
 const LiraAttackImages = [
     new Image(),
     new Image()
@@ -75,8 +75,8 @@ Dark_ForcesAttackImages[0].src = 'IMG/attack_Dark_Forces1.png';
 Dark_ForcesAttackImages[1].src = 'IMG/attack_Dark_Forces2.png';
 
 const characters = [
-    { name: 'Kero', health: 120, damage: 15, speed: 1.2, color: 'blue', attackRange: 50, image: KeroImage, attackImages: KeroAttackImages },
-    { name: 'Lira', health: 80, damage: 25, speed: 1.0, color: 'purple', attackRange: 350, image: LiraImage, attackImages: LiraAttackImages },
+    { name: 'Kero', health: 120, damage: 20, speed: 1.2, color: 'blue', attackRange: 50, image: KeroImage, attackImages: KeroAttackImages },
+    { name: 'Lira', health: 80, damage: 15, speed: 1.0, color: 'purple', attackRange: 350, image: LiraImage, attackImages: LiraAttackImages },
     { name: 'Drax', health: 100, damage: 20, speed: 1.5, color: 'green', attackRange: 40, image: DraxImage, attackImages: DraxAttackImages },
     { name: 'Meester Sumi', health: 150, damage: 10, speed: 0.8, color: 'gray', attackRange: 45, image: Meester_SumiImage, attackImages: Meester_SumiAttackImages },
     { name: 'Zin', health: 90, damage: 18, speed: 1.4, color: 'orange', attackRange: 400, image: ZinImage, attackImages: ZinAttackImages },
